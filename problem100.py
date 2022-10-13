@@ -32,14 +32,14 @@ class Solution:
                 TreeNode(self.inputs[i][0]), #p
                 TreeNode(self.inputs[i][1]), #q
             ))
-            print(f"Test[{i}] Result: {results[i]}")
-        if results == self.outputs:
-            print("All tests passed.")
-        else:
-            print("At least one test failed.")
+
+            if results[i] == self.outputs[i]:
+                print(f"Test[{i}] Result: Passed!")
+            else:
+                print(f"Test[{i}] Result: Failed!")
 
     def BFS_method(self, p, q) -> bool:
-        """Verifies that trees are equal using BFS method
+        """Verifies that trees are equal using BFS method (FIFO)
         
         Args:
             p: tree with [0,100] nodes
@@ -51,7 +51,6 @@ class Solution:
         pqueue = [p]
         qqueue = [q]
 
-
         # one or both trees are empty
         if (p is None) and (q is None):
             return True
@@ -59,7 +58,7 @@ class Solution:
             return False
 
         while (len(pqueue) > 0) and (len(qqueue) > 0):
-            # extract node
+            # extract node from front (FIFO)
             u = pqueue.pop(0)
             v = qqueue.pop(0)
             
@@ -80,8 +79,43 @@ class Solution:
         # all nodes verified
         return True
 
+    def DFS(self, node) -> list:
+        """Traverses tree from node using DFS method
+        
+        Args:
+            node: tree with [0,100] nodes
+
+        Returns:
+            list of node vals in order of traversal
+        """
+        stack, seen = [], []
+        seen.append(node)
+        while len(stack) > 0:
+            u = stack.pop()
+            if u not in seen:
+                seen.append(u)
+                stack.append(u.left)
+                stack.append(u.right)
+        return seen
+
+    def DFS_method(self, p, q) -> bool:
+        """Verifies that trees are equal using DFS method (LIFO)
+        
+        Args:
+            p: tree with [0,100] nodes
+            q: tree with [0,100] nodes
+            
+        Returns:
+            boolean of whether or not trees are equal    
+        """
+        pseen = self.DFS(p)
+        qseen = self.DFS(q)
+        
+        # TODO: write an __eq__ method to compare objects
+        return pseen == qseen
+
     def isSameTree(self, p, q) -> bool:
-        return self.BFS_method(p, q) 
+        return self.BFS_method(p, q)
 
 def main():
     Solution()
